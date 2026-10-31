@@ -1,0 +1,66 @@
+@baseUrl = https://localhost:7080
+@email = you@example.com
+@password = Example-password-123!
+@accessToken = paste-access-token-here
+@refreshToken = paste-refresh-token-here
+@userId = paste-user-id-here
+
+### Process health
+GET {{baseUrl}}/health
+
+### Register a regular user
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "displayName": "Your Name"
+}
+
+### Log in; copy response tokens into the variables above
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Current profile
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{accessToken}}
+
+### Rotate tokens; replace BOTH token variables after success
+POST {{baseUrl}}/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Admin only: list users
+GET {{baseUrl}}/api/admin/users?page=1&pageSize=20
+Authorization: Bearer {{accessToken}}
+
+### Admin only: grant Admin role
+PUT {{baseUrl}}/api/admin/users/{{userId}}/roles/Admin
+Authorization: Bearer {{accessToken}}
+
+### Change password; invalidates all current sessions
+POST {{baseUrl}}/api/auth/change-password
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "currentPassword": "{{password}}",
+  "newPassword": "Another-password-456!"
+}
+
+### Log out current session
+POST {{baseUrl}}/api/auth/logout
+Authorization: Bearer {{accessToken}}
+
+### Log out every session
+POST {{baseUrl}}/api/auth/logout-all
+Authorization: Bearer {{accessToken}}
